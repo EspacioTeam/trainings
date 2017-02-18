@@ -1,25 +1,33 @@
 #!/usr/bin/python3
 import requests
-import paramiko, os
-from hashlib import md5
+import paramiko
 
 def put(hostname, flag):
     try:
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.connect(hostname, port=22, username="vulnuser", password="innoctf2017", timeout=2)
+        #client.connect("5.8.180.21", port=22, username="mctf", password="pro100pass", timeout=2)
         channel = client.get_transport().open_session()
         channel.get_pty()
         channel.settimeout(2)
-        s1 = 'echo "DELETE FROM `order`" | sqlite3 tshirt.db;'
-        s2 = 'echo "DELETE FROM `order_status`" | sqlite3 tshirt.db;'
-        s3 = 'echo "DELETE FROM `user`" | sqlite3 tshirt.db;'
+        s1 = 'echo "DELETE * FROM `orders`" < sqlite3 tshirt.db;'
+        s2 = 'echo "DELETE * FROM `order_status`" | sqlite3 tshirt.db;'
+        s3 = 'echo "DELETE * FROM `user`" | sqlite3 tshirt.db;'
         flags = []
-        for i in range(4):
-            flags.append('echo "INSERT INTO `flag` VALUES (NULL, %s);" | sqlite3 tshirt.db;' % md5(os.urandom(32).hexdigest()))
-        flags.append('echo "INSERT INTO `flag` VALUES (NULL, %s);" | sqlite3 tshirt.db;' % flag)
+        for i in range(5):
+            flags.append('echo "INSERT INTO `orders` (1, 2, 3) VALUES (1, 2, {});" | sqlite3 tshirt.db;')
         channel.exec_command("cd /home/vulnuser/service/;pwd;" + s1 + s2 + s3 + ''.join(flags))
+        #channel.exec_command('ls\n')
+        #print (channel.recv(1024))
+        #channel.exec_command()
+        #print(channel.recv(1024))
+        #channel.exec_command("echo 'DELETE * FROM order_status' | sqlite3 tshirt.db")
+        #channel.exec_command("echo 'DELETE * FROM 'user' | sqlite3 tshirt.db")
+        #channel.send("pro100pass"+'\n')
 
+
+        #print (channel.recv(1024))
         channel.close()
         client.close()
         exit(101)
@@ -33,6 +41,7 @@ def check(hostname):
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.connect(hostname, port=22, username="vulnuser", password="innoctf2017", timeout=2)
+        #client.connect("5.8.180.21", port=22, username="mctf", password="pro100pass", timeout=2)
         channel = client.get_transport().open_session()
         channel.get_pty()
         channel.settimeout(2)
@@ -50,14 +59,4 @@ def check(hostname):
     except:
         exit(102)
 if __name__ == '__main__':
-    if len(argv) > 1:
-        if argv[1] == "check":
-            if len(argv) > 2:
-                exit(check(argv[2]))
-        elif argv[1] == "put":
-            if len(argv) > 3:
-                exit(put(argv[2], argv[3]))
-        elif argv[1] == "get":
-            if len(argv) > 3:
-                exit(get(argv[2], argv[3]))
-    exit(110)
+    put("192.168.100.6", "kek")
