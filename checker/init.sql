@@ -23,6 +23,8 @@ CREATE TABLE IF NOT EXISTS `ctf`.`user` (
   `name` VARCHAR(45) NULL,
   `score` INT NOT NULL DEFAULT 0,
   `regdate` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `host` varchar(40) NOT NULL,
+  `points` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `token_UNIQUE` (`token` ASC),
   UNIQUE INDEX `name_UNIQUE` (`name` ASC))

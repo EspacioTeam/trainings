@@ -1,0 +1,49 @@
+#!/usr/bin/python3
+import requests
+import paramiko
+
+def put(hostname, flag):
+    try:
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.connect(hostname, port=22, username="vulnuser", password="innoctf2017", timeout=2)
+        channel = client.get_transport().open_session()
+        channel.get_pty()
+        channel.settimeout(2)
+        s1 = 'echo "DELETE * FROM `orders`" < sqlite3 tshirt.db;'
+        s2 = 'echo "DELETE * FROM `order_status`" | sqlite3 tshirt.db;'
+        s3 = 'echo "DELETE * FROM `user`" | sqlite3 tshirt.db;'
+        flags = []
+        for i in range(5):
+            flags.append('echo "INSERT INTO `orders` (1, 2, 3) VALUES (1, 2, {});" | sqlite3 tshirt.db;')
+        channel.exec_command("cd /home/vulnuser/service/;pwd;" + s1 + s2 + s3 + ''.join(flags))
+
+        channel.close()
+        client.close()
+        exit(101)
+    except (paramiko.AuthenticationException, paramiko.SSHException) as se:
+        exit(104)
+    except:
+        exit(103)
+
+def check(hostname):
+    try:
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.connect(hostname, port=22, username="vulnuser", password="innoctf2017", timeout=2)
+        channel = client.get_transport().open_session()
+        channel.get_pty()
+        channel.settimeout(2)
+        s1 = 'echo "SELECT * FROM orders" < sqlite3 tshirt.db;';
+        s2 = "echo 'SELECT * FROM order_status | sqlite3 tshirt.db;"
+        s3 = "echo 'SELECT * FROM user | sqlite3 tshirt.db"
+
+        channel.exec_command("cd /home/vulnuser/service/;pwd;" + s1 + s2 + s3)
+
+        channel.close()
+        client.close()
+        exit(101)
+    except (paramiko.AuthenticationException, paramiko.SSHException) as se:
+        exit(104)
+    except:
+        exit(102)
