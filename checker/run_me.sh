@@ -19,6 +19,7 @@ sleep 2
 
 ./checker.py 0.0.0.0 14900 ${ip} root ${pass} &
 ./web.py 0.0.0.0 8080 ${ip} root ${pass} &
+#./zond.py root ${pass} &
 
 echo "[+] done"
 wait
