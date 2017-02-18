@@ -23,11 +23,11 @@ CREATE TABLE IF NOT EXISTS `ctf`.`user` (
   `name` VARCHAR(45) NULL,
   `score` INT NOT NULL DEFAULT 0,
   `regdate` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `host` varchar(40) NOT NULL,
-  `points` int(11) NOT NULL,
+  `host` varchar(40) NULL DEFAULT '127.0.0.1',
+  `status` BYTE NULL DEFAULT 104,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `token_UNIQUE` (`token` ASC),
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
+  UNIQUE INDEX `name_UNIQUE`  (`name` ASC))
 ENGINE = InnoDB;
 
 

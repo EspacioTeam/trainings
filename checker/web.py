@@ -24,6 +24,24 @@ def run_web(host, port, db_host, db_user, db_pwd):
   app.run(host=host, port=port)
 
 
+@app.route("/confirm/<name>")
+def confirm(name):
+  try:
+    ip = request.remote_addr
+    print(ip)
+    cursor = app.config['db'].cursor()
+    cursor.execute("select id from user where name=%s", (name,))
+    ids = cursor.fetchone()
+    if ids:
+      cursor.execute("update user set host=%s where id=%s", (ids,))
+      cursor.commit()
+    cursor.close()
+    return "success"
+
+  except:
+    app.config['db'].rollback()
+    abort(400)
+
 @app.route("/cookie.js")
 def script1():
   with open("templates/cookie.js", "r") as r:
