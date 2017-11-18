@@ -17,6 +17,7 @@
                     <ul class="nav navbar-nav">
                         {% if registered %}
                         <li><a>{{ token }}</a></li>
+                        <li>root:innoctf2017@5.8.180.221:{{ port }}</li>
                         <li><a id="logout">Logout</a></li>
                         {% else %}
                         <li><a href="#Register" data-toggle="modal" data-target=".modal-register">Register</a> </li>
@@ -30,11 +31,21 @@
     <div class="container" style="margin-top:50px">
         <h1>Scoreboard</h1>
         <table class="table table-striped">
-            {% if participants %} {% for name, score, regdate in participants %}
+            <tr>
+		<th>ID</th>
+		<th>Name</th>
+		<th>Score</th>
+		<th>Status</th>
+		<th>HOST</th>
+		<th>Reg date</th>
+            </tr>    
+            {% if participants %} {% for name, score, status, host, regdate in participants %}
             <tr>
                 <td>{{ loop.index0 +1 }}</td>
                 <td class=".text-center">{{ name }}</td>
                 <td class=".text-center">{{ score }}</td>
+                <td class=".text-center"><span title="TEST">{{ status }}</span></td>
+		<td class=".text-center">{{ host }}</td>
                 <td class=".text-center">{{ regdate }}</td>
             </tr>
             {% endfor %} {% else %}
@@ -94,8 +105,19 @@
         })
 
         $("#logout").click(function() {
-            Cookies.remove('token');
-            location.reload();
+            // Cookies.remove('token');
+            var data = {token: Cookies.get('token')}; 
+	    $.ajax({
+		type: "POST",
+		url: "/logout", 
+		data: data,
+		dataType: "json",
+		success: function( data ) {
+                    console.log(data)
+  		    $( ".result" ).html( data );
+            	}
+	    });
+            // location.reload();
         })
     </script>
 </body>

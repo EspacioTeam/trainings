@@ -19,7 +19,7 @@ STATUS_CODE = {
 BASE_PATH = "./zond_target"
 FLAG_POINT = 100
 hosts = []
-conn = MySQLdb.connect(user="root", password="sA5OvbWoEs0u0jvKGIPOWFhQyt9PQD", host="172.17.0.2", db="ctf")
+conn = MySQLdb.connect(user="root", password="lMKMdiEJodCwIFXfGgvYnXcbfQwQDb", host="172.17.0.3", db="ctf")
 
 def mysql_query(query, args=(), one=True, is_destructive=False):
     assert(isinstance(query, str))
@@ -115,7 +115,7 @@ def checkall():
         i.join()
     return 0
 
-schedule.every(0.1).minutes.do(putall)
+schedule.every(1).minutes.do(putall)
 
 if __name__ == '__main__':
     hosts = list(mysql_query("SELECT host FROM user"))

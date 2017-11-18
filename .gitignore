@@ -87,3 +87,8 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+checker/zond_target
+checker/run_web.sh
+checker/run_checker.sh
+checker/*.save
